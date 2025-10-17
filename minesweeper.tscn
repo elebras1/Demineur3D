@@ -1,9 +1,9 @@
 [gd_scene load_steps=2 format=3 uid="uid://b7a05jt8pw7m7"]
 
-[ext_resource type="Script" uid="uid://y4eydy57ru5w" path="res://damier.gd" id="1_xrxn8"]
+[ext_resource type="Script" uid="uid://clavtibk2qcg8" path="res://damier.gd" id="1_1jydy"]
 
-[node name="Demineur" type="Node3D"]
-script = ExtResource("1_xrxn8")
+[node name="Minesweeper" type="Node3D"]
+script = ExtResource("1_1jydy")
 
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9233912, 0.38386023, 0, -0.38386023, 0.9233912, 0, 7.004199, 0)

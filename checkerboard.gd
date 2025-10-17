@@ -5,7 +5,7 @@ extends Node3D
 @export var cell_size : float = 1.0
 @export var num_mines : int = 15
 
-var cell_scene = preload("res://cell.tscn")
+var cell_scene = preload("res://case.tscn")
 var grid : Array = []
 var mine_matrix : Array = []  # Matrice des mines (-1 = mine, sinon = nombre de mines voisines)
 
