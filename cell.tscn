@@ -1,0 +1,23 @@
+[gd_scene load_steps=5 format=3 uid="uid://blim338rlrmej"]
+
+[ext_resource type="Script" uid="uid://3mmxcrkolvmp" path="res://cell.gd" id="1_mk6mh"]
+
+[sub_resource type="BoxMesh" id="BoxMesh_6hwxq"]
+size = Vector3(1, 0.2, 1)
+
+[sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mk6mh"]
+
+[sub_resource type="BoxShape3D" id="BoxShape3D_r8l4f"]
+size = Vector3(1, 0.2, 1)
+
+[node name="Case" type="Node3D"]
+script = ExtResource("1_mk6mh")
+
+[node name="MeshInstance3D" type="MeshInstance3D" parent="."]
+mesh = SubResource("BoxMesh_6hwxq")
+
+[node name="StaticBody3D" type="StaticBody3D" parent="."]
+physics_material_override = SubResource("PhysicsMaterial_mk6mh")
+
+[node name="CollisionShape3D" type="CollisionShape3D" parent="StaticBody3D"]
+shape = SubResource("BoxShape3D_r8l4f")
