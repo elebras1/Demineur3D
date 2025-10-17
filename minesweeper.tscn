@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://b7a05jt8pw7m7"]
 
-[ext_resource type="Script" uid="uid://clavtibk2qcg8" path="res://damier.gd" id="1_1jydy"]
+[ext_resource type="Script" uid="uid://bu6awryu88wxf" path="res://checkerboard.gd" id="1_1jydy"]
 
 [node name="Minesweeper" type="Node3D"]
 script = ExtResource("1_1jydy")
@@ -9,4 +9,4 @@ script = ExtResource("1_1jydy")
 transform = Transform3D(1, 0, 0, 0, 0.9233912, 0.38386023, 0, -0.38386023, 0.9233912, 0, 7.004199, 0)
 
 [node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-0.9980223, 0, 0.062860176, 0, 1, 0, -0.062860176, 0, -0.9980223, 4.281822, 1.3932109, -3.9211497)
+transform = Transform3D(-1, -5.4062983e-08, 6.8701794e-08, 0, 0.7858569, 0.61840844, -8.742278e-08, 0.61840844, -0.7858569, 4.9522715, 5.014338, -1.9851961)
