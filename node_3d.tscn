@@ -2,5 +2,5 @@
 
 [ext_resource type="Script" path="res://Node3D.gd" id="1_h3rh8"]
 
-[node name="Node3D" type="Node3D"]
+[node name="ProceduralGeneration" type="Node3D"]
 script = ExtResource("1_h3rh8")
