@@ -1,6 +1,6 @@
 [gd_scene load_steps=2 format=3 uid="uid://xfmpxecno8m4"]
 
-[ext_resource type="Script" path="res://Node3D.gd" id="1_h3rh8"]
+[ext_resource type="Script" path="res://ProceduralGeneration.gd" id="1_h3rh8"]
 
 [node name="ProceduralGeneration" type="Node3D"]
 script = ExtResource("1_h3rh8")
