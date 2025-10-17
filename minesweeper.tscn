@@ -1,6 +1,7 @@
-[gd_scene load_steps=2 format=3 uid="uid://b7a05jt8pw7m7"]
+[gd_scene load_steps=3 format=3 uid="uid://b7a05jt8pw7m7"]
 
 [ext_resource type="Script" uid="uid://bu6awryu88wxf" path="res://checkerboard.gd" id="1_1jydy"]
+[ext_resource type="PackedScene" uid="uid://cjkj5coplwcnx" path="res://player.tscn" id="2_7nxku"]
 
 [node name="Minesweeper" type="Node3D"]
 script = ExtResource("1_1jydy")
@@ -8,5 +9,5 @@ script = ExtResource("1_1jydy")
 [node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
 transform = Transform3D(1, 0, 0, 0, 0.9233912, 0.38386023, 0, -0.38386023, 0.9233912, 0, 7.004199, 0)
 
-[node name="Camera3D" type="Camera3D" parent="."]
-transform = Transform3D(-1, -5.4062983e-08, 6.8701794e-08, 0, 0.7858569, 0.61840844, -8.742278e-08, 0.61840844, -0.7858569, 4.9522715, 5.014338, -1.9851961)
+[node name="CharacterBody3D" parent="." instance=ExtResource("2_7nxku")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3003216, 1.0996242, 1.4482918)
