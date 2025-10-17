@@ -5,6 +5,7 @@ var value : int = 0  # -1 = mine, 0 = vide, >0 = nombre de mines voisines
 var is_dark : bool = false  # effet damier
 
 @onready var mesh: MeshInstance3D = $MeshInstance3D
+@onready var label: Label3D = $MeshInstance3D/Label3D
 
 func _ready():
 	if mesh.material_override == null:
@@ -26,3 +27,15 @@ func update_color():
 				mat.albedo_color = Color(0.8, 0.7, 0.6) if is_dark else Color(0.9, 0.85, 0.75)
 		2:
 			mat.albedo_color = Color(0.35, 0.45, 0.35) if is_dark else Color(0.45, 0.55, 0.45)
+	
+	update_label()
+
+func update_label():
+	if not label:
+		return
+	
+	if state == 1 and value > 0:
+		label.visible = true
+		label.text = str(value)
+	else:
+		label.visible = false

@@ -5,7 +5,7 @@ extends Node3D
 @export var cell_size : float = 1.0
 @export var num_mines : int = 15
 
-var cell_scene = preload("res://case.tscn")
+var cell_scene = preload("res://cell.tscn")
 var grid : Array = []
 var mine_matrix : Array = []  # Matrice des mines (-1 = mine, sinon = nombre de mines voisines)
 
@@ -24,6 +24,9 @@ func _ready():
 		[0, 0, 0, 0, 0, 0, 0, 0, -1, 0],
 		[0, 0, 0, -1, 0, 0, 0, 0, 0, 0]
 	])
+	
+	# Appliquer une matrice de test avec des cases révélées et des drapeaux
+	apply_test_game_state()
 
 # Setter pour la matrice des mines
 func set_mine_matrix(matrix: Array):
@@ -100,6 +103,27 @@ func calculate_numbers():
 							count += 1
 			
 			grid[y][x].value = count
+
+# Fonction pour appliquer un état de jeu de test (partie en cours)
+func apply_test_game_state():
+	# Matrice d'état : 0 = cachée, 1 = révélée, 2 = drapeau
+	var state_matrix = [
+		[1, 1, 1, 0, 1, 1, 1, 1, 0, 0],
+		[1, 0, 1, 1, 1, 1, 0, 2, 0, 0],
+		[1, 1, 1, 0, 0, 1, 1, 1, 0, 0],
+		[0, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+		[1, 1, 0, 0, 0, 1, 0, 0, 0, 0],
+		[1, 1, 0, 0, 0, 1, 1, 0, 1, 1],
+		[1, 1, 1, 0, 0, 1, 1, 1, 1, 1],
+		[1, 0, 1, 0, 0, 0, 1, 0, 1, 1],
+		[1, 1, 1, 0, 0, 0, 1, 1, 0, 1],
+		[0, 0, 1, 0, 0, 0, 0, 1, 1, 1]
+	]
+	
+	for y in range(min(grid_height, state_matrix.size())):
+		for x in range(min(grid_width, state_matrix[y].size())):
+			grid[y][x].state = state_matrix[y][x]
+			grid[y][x].update_color()
 
 # Fonction pour révéler une cellule (à appeler au clic)
 func reveal_cell(x: int, y: int):
