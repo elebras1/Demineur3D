@@ -6,8 +6,9 @@ extends Node3D
 @export var num_mines : int = 200
 
 var cell_scene = preload("res://cell.tscn")
-var grid : Array = []
-var mine_matrix : Array = []  # Matrice des mines (-1 = mine, sinon = nombre de mines voisines)
+var grid: Array = [] # 2D Array de nodes Cell
+var generator: MineSweeper = MineSweeper.new()
+var board: Array = []
 
 func _ready():
 	randomize()
@@ -74,7 +75,6 @@ func clear_grid():
 			cell.queue_free()
 	grid.clear()
 
-func generate_grid():
 	for y in range(grid_height):
 		var row = []
 		for x in range(grid_width):
@@ -87,6 +87,8 @@ func generate_grid():
 			cell.update_color()
 			row.append(cell)
 		grid.append(row)
+		if y % 5 == 0:
+			await get_tree().process_frame
 
 func apply_mine_matrix():
 	if mine_matrix.size() == 0:
@@ -118,7 +120,6 @@ func calculate_numbers():
 func reveal_cell(x: int, y: int):
 	if x < 0 or x >= grid_width or y < 0 or y >= grid_height:
 		return
-	
 	var cell = grid[y][x]
 	if cell.state != 0:
 		return
@@ -136,7 +137,6 @@ func reveal_cell(x: int, y: int):
 func toggle_flag(x: int, y: int):
 	if x < 0 or x >= grid_width or y < 0 or y >= grid_height:
 		return
-	
 	var cell = grid[y][x]
 	if cell.state == 0:
 		cell.state = 2
