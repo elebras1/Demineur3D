@@ -29,10 +29,6 @@ func _physics_process(delta):
 		direction.z -= 1
 	if Input.is_key_pressed(KEY_S):
 		direction.z += 1
-	if Input.is_key_pressed(KEY_Q):
-		direction.x -= 1
-	if Input.is_key_pressed(KEY_D):
-		direction.x += 1
 
 	direction = direction.normalized()
 	var global_dir = transform.basis * direction
