@@ -1,16 +1,24 @@
 @tool
 class_name MineSweeper
 
-## Directions 8-voisines (N, NE, E, SE, S, SW, W, NW)
+## ------------------------------------------------------------
+##  MineSweeper
+##  A utility class providing logic and generation functions 
+##  for a fully solvable Minesweeper board.
+## ------------------------------------------------------------
+
+## 8-directional neighbor offsets (N, NE, E, SE, S, SW, W, NW)
 const DIRS8 = [
 	Vector2i(-1, -1), Vector2i(-1, 0), Vector2i(-1, 1),
 	Vector2i(0, -1),  Vector2i(0, 1),
 	Vector2i(1, -1),  Vector2i(1, 0),  Vector2i(1, 1)
 ]
 
+## Checks whether (r, c) is inside the board boundaries.
 func in_bounds(r: int, c: int, rows: int, cols: int) -> bool:
 	return r >= 0 and r < rows and c >= 0 and c < cols
 
+## Returns all valid neighboring cell coordinates around (r, c).
 func neighbors(r: int, c: int, rows: int, cols: int) -> Array:
 	var result: Array = []
 	for dir in DIRS8:
@@ -20,7 +28,7 @@ func neighbors(r: int, c: int, rows: int, cols: int) -> Array:
 			result.append(Vector2i(rr, cc))
 	return result
 
-
+## Creates an empty Minesweeper board with the given size.
 func create_empty_board(rows: int, cols: int) -> Array:
 	var board: Array = []
 	for r in range(rows):
@@ -35,7 +43,7 @@ func create_empty_board(rows: int, cols: int) -> Array:
 		board.append(row)
 	return board
 
-
+## Calculates adjacent mine counts for all non-mine cells.
 func calculate_numbers(board: Array, rows: int, cols: int) -> void:
 	for r in range(rows):
 		for c in range(cols):
@@ -48,7 +56,7 @@ func calculate_numbers(board: Array, rows: int, cols: int) -> void:
 					count += 1
 			board[r][c]["num"] = count
 
-
+## Reveals cells recursively using a flood fill (for zero-number areas).
 func flood_fill_reveal(board: Array, r: int, c: int, rows: int, cols: int) -> void:
 	if board[r][c]["revealed"] or board[r][c]["flag"]:
 		return
@@ -65,7 +73,7 @@ func flood_fill_reveal(board: Array, r: int, c: int, rows: int, cols: int) -> vo
 					if board[nb.x][nb.y]["num"] == 0:
 						q.append(nb)
 
-
+## Applies one logical deduction pass (flagging or revealing safe cells).
 func apply_logic_once(board: Array, rows: int, cols: int) -> bool:
 	var changed := false
 	for r in range(rows):
@@ -93,7 +101,7 @@ func apply_logic_once(board: Array, rows: int, cols: int) -> bool:
 						changed = true
 	return changed
 
-
+## Determines whether the board can be logically solved without guessing.
 func is_solvable(board: Array, rows: int, cols: int, first_click: Vector2i) -> bool:
 	flood_fill_reveal(board, first_click.x, first_click.y, rows, cols)
 	var max_iters = rows * cols
@@ -106,7 +114,7 @@ func is_solvable(board: Array, rows: int, cols: int, first_click: Vector2i) -> b
 				return false
 	return true
 
-
+## Creates a deep copy of the board array to avoid reference issues.
 func deep_copy_board(board: Array, rows: int, cols: int) -> Array:
 	var copy: Array = []
 	for r in range(rows):
@@ -116,7 +124,7 @@ func deep_copy_board(board: Array, rows: int, cols: int) -> Array:
 		copy.append(row)
 	return copy
 
-
+## Generates a fully solvable Minesweeper board with safe first click.
 func generate_mines_solvable(rows: int, cols: int, n_mines: int, first_click: Vector2i, safe_radius := 1, max_zero_block_ratio := 0.25) -> Array:
 	var all_cells = get_all_cells(rows, cols)
 	var safe_zone = compute_safe_zone(first_click, rows, cols, safe_radius)
@@ -124,10 +132,7 @@ func generate_mines_solvable(rows: int, cols: int, n_mines: int, first_click: Ve
 
 	return generate_valid_board(rows, cols, n_mines, first_click, available, max_zero_block_ratio)
 
-
-# --- Sous-fonctions --- #
-
-# 1️⃣ Liste toutes les cellules du plateau
+## Returns all board cell coordinates as Vector2i positions.
 func get_all_cells(rows: int, cols: int) -> Array:
 	var cells: Array = []
 	for r in range(rows):
@@ -135,8 +140,7 @@ func get_all_cells(rows: int, cols: int) -> Array:
 			cells.append(Vector2i(r, c))
 	return cells
 
-
-# 2️⃣ Calcule la zone sûre autour du premier clic
+## Computes a dictionary of "safe" cells around the first click.
 func compute_safe_zone(first_click: Vector2i, rows: int, cols: int, safe_radius: int) -> Dictionary:
 	var safe_zone: Dictionary = {}
 	var frontier: Array = [first_click]
@@ -151,8 +155,7 @@ func compute_safe_zone(first_click: Vector2i, rows: int, cols: int, safe_radius:
 		frontier = new_frontier
 	return safe_zone
 
-
-# 3️⃣ Filtre les cases où les mines peuvent être placées
+## Filters out safe-zone cells from the list of all possible mine locations.
 func filter_available_cells(all_cells: Array, safe_zone: Dictionary) -> Array:
 	var available: Array = []
 	for cell in all_cells:
@@ -160,8 +163,7 @@ func filter_available_cells(all_cells: Array, safe_zone: Dictionary) -> Array:
 			available.append(cell)
 	return available
 
-
-# 4️⃣ Génère jusqu’à trouver une grille valide et solvable
+## Repeatedly generates random boards until one is solvable.
 func generate_valid_board(rows: int, cols: int, n_mines: int, first_click: Vector2i, available: Array, max_zero_block_ratio: float) -> Array:
 	var board: Array
 	var attempts := 0
@@ -171,25 +173,24 @@ func generate_valid_board(rows: int, cols: int, n_mines: int, first_click: Vecto
 		attempts += 1
 		board = create_empty_board(rows, cols)
 
-		# Placement aléatoire des mines
+		# Random mine placement
 		for i in range(n_mines):
 			var m = available.pick_random()
 			board[m.x][m.y]["mine"] = true
 
 		calculate_numbers(board, rows, cols)
 
-		# Vérifie le bloc de zéros autour du premier clic
+		# Validate zero-block size
 		if not is_zero_block_valid(board, rows, cols, first_click, max_zero_block_ratio):
 			continue
 
-		# Vérifie la solvabilité
+		# Check solvability
 		if is_solvable(deep_copy_board(board, rows, cols), rows, cols, first_click):
 			return board
 
 	return board
 
-
-# 5️⃣ Vérifie que le bloc de zéros autour du premier clic n’est pas trop grand
+## Ensures that the connected area of zero-number cells is not too large.
 func is_zero_block_valid(board: Array, rows: int, cols: int, first_click: Vector2i, max_zero_block_ratio: float) -> bool:
 	if board[first_click.x][first_click.y]["num"] != 0:
 		return true
@@ -204,6 +205,6 @@ func is_zero_block_valid(board: Array, rows: int, cols: int, first_click: Vector
 				q.append(nb)
 	return float(visited.size()) <= float(rows * cols) * max_zero_block_ratio
 
-
+## Main entry point: creates a solvable board ready for play.
 func create_board(rows: int, cols: int, n_mines: int, first_click := Vector2i(0, 0), safe_radius := 1, max_zero_block_ratio := 0.25) -> Array:
 	return generate_mines_solvable(rows, cols, n_mines, first_click, safe_radius, max_zero_block_ratio)

@@ -18,7 +18,6 @@ func _ready():
 		for j in range(grid_width):
 			reveal_cell(j, i)
 
-# Génère la grille 3D en plusieurs frames pour fluidité
 func generate_grid_3d() -> void:
 	for row in grid:
 		for cell in row:
