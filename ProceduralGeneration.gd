@@ -1,6 +1,5 @@
 @tool
 class_name MineSweeper
-extends Node
 
 ## Directions 8-voisines (N, NE, E, SE, S, SW, W, NW)
 const DIRS8 = [
