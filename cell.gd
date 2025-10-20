@@ -27,7 +27,6 @@ func update_color():
 				mat.albedo_color = Color(0.8, 0.7, 0.6) if is_dark else Color(0.9, 0.85, 0.75)
 		2:
 			mat.albedo_color = Color(0.35, 0.45, 0.35) if is_dark else Color(0.45, 0.55, 0.45)
-	
 	update_label()
 
 func update_label():
