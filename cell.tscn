@@ -3,12 +3,12 @@
 [ext_resource type="Script" uid="uid://3mmxcrkolvmp" path="res://cell.gd" id="1_mk6mh"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_6hwxq"]
-size = Vector3(1, 0.2, 1)
+size = Vector3(5, 0.2, 5)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mk6mh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r8l4f"]
-size = Vector3(1, 0.2, 1)
+size = Vector3(5, 0.2, 5)
 
 [node name="Case" type="Node3D"]
 script = ExtResource("1_mk6mh")
