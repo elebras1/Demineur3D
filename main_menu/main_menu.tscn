@@ -1,0 +1,51 @@
+[gd_scene load_steps=4 format=3 uid="uid://bg86nmh0biqea"]
+
+[ext_resource type="Script" uid="uid://cs2foodspf3jc" path="res://main_menu/main_menu.gd" id="1_d3a7t"]
+[ext_resource type="PackedScene" uid="uid://b7a05jt8pw7m7" path="res://minesweeper.tscn" id="1_oa53l"]
+
+[sub_resource type="LabelSettings" id="LabelSettings_d3a7t"]
+font_size = 60
+outline_size = 3
+outline_color = Color(0.13319641, 0.13319641, 0.13319638, 1)
+
+[node name="MainMenu" type="Node"]
+script = ExtResource("1_d3a7t")
+
+[node name="SubViewportContainer" type="SubViewportContainer" parent="."]
+offset_right = 695.0
+offset_bottom = 515.0
+
+[node name="SubViewport" type="SubViewport" parent="SubViewportContainer"]
+handle_input_locally = false
+size = Vector2i(1152, 648)
+render_target_update_mode = 4
+
+[node name="Minesweeper" parent="SubViewportContainer/SubViewport" instance=ExtResource("1_oa53l")]
+
+[node name="CanvasLayer" type="CanvasLayer" parent="."]
+
+[node name="VBoxContainer" type="VBoxContainer" parent="CanvasLayer"]
+offset_left = 301.0
+offset_top = 1.0
+offset_right = 800.0
+offset_bottom = 650.0
+
+[node name="Label" type="Label" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Démineur 3D"
+label_settings = SubResource("LabelSettings_d3a7t")
+horizontal_alignment = 1
+
+[node name="OptionButton" type="OptionButton" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+item_count = 3
+popup/item_0/text = "Facile"
+popup/item_0/id = 0
+popup/item_1/text = "Moyen"
+popup/item_1/id = 1
+popup/item_2/text = "Difficile"
+popup/item_2/id = 2
+
+[node name="Button" type="Button" parent="CanvasLayer/VBoxContainer"]
+layout_mode = 2
+text = "Jouer"

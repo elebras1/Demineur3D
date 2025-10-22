@@ -2,7 +2,7 @@ extends Node3D
 
 @export var grid_width: int = 50
 @export var grid_height: int = 50
-@export var cell_size: float = 1.0
+@export var cell_size: float = 5.0
 @export var num_mines: int = 900
 
 var cell_scene = preload("res://cell.tscn")
