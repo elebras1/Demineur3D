@@ -1,14 +1,14 @@
 [gd_scene load_steps=5 format=3 uid="uid://blim338rlrmej"]
 
-[ext_resource type="Script" uid="uid://3mmxcrkolvmp" path="res://cell.gd" id="1_mk6mh"]
+[ext_resource type="Script" path="res://cell.gd" id="1_mk6mh"]
 
 [sub_resource type="BoxMesh" id="BoxMesh_6hwxq"]
-size = Vector3(5, 0.2, 5)
+size = Vector3(1, 0.2, 1)
 
 [sub_resource type="PhysicsMaterial" id="PhysicsMaterial_mk6mh"]
 
 [sub_resource type="BoxShape3D" id="BoxShape3D_r8l4f"]
-size = Vector3(5, 0.2, 5)
+size = Vector3(1, 0.2, 1)
 
 [node name="Case" type="Node3D"]
 script = ExtResource("1_mk6mh")
@@ -17,7 +17,7 @@ script = ExtResource("1_mk6mh")
 mesh = SubResource("BoxMesh_6hwxq")
 
 [node name="Label3D" type="Label3D" parent="MeshInstance3D"]
-transform = Transform3D(-1, 8.742278e-08, -1.0425061e-15, 0, 1.1924881e-08, 1, 8.742278e-08, 1, -1.1924881e-08, 0, 0.114260405, 0)
+transform = Transform3D(-1, 8.74228e-08, -1.04251e-15, 0, 1.19249e-08, 1, 8.74228e-08, 1, -1.19249e-08, 0, 0.11426, 0)
 font_size = 60
 outline_size = 15
 

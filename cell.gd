@@ -1,38 +1,92 @@
 extends Node3D
+class_name Cell
 
-var state: int = 0  # 0 = caché, 1 = révélé, 2 = drapeau
-var value: int = 0  # -1 = mine, 0 = vide, >0 = nombre de mines voisines
+@export var grid_pos: Vector2i
+@export var value: int = 0
+@export var board: Array
+@export var generator: MineSweeper
+@export var state: int = 0  # 0 = cachée, 1 = révélée, 2 = flag
+
+var parent_grid: Node = null
 var is_dark: bool = false
 
-@onready var mesh: MeshInstance3D = $MeshInstance3D
-@onready var label: Label3D = $MeshInstance3D/Label3D
+@onready var mesh_instance = $MeshInstance3D
+@onready var label = $MeshInstance3D/Label3D
 
 func _ready():
-	if mesh.material_override == null:
-		mesh.material_override = StandardMaterial3D.new()
+	# Créer un matériau pour chaque cellule
+	if mesh_instance:
+		var mat = StandardMaterial3D.new()
+		mesh_instance.material_override = mat
 	update_color()
 
 func update_color():
-	var mat = mesh.material_override
-	if mat == null:
+	if not mesh_instance or not mesh_instance.material_override:
 		return
+	
+	var mat = mesh_instance.material_override as StandardMaterial3D
+	
 	match state:
-		0:
-			mat.albedo_color = Color(0.4, 0.5, 0.4) if is_dark else Color(0.5, 0.6, 0.5)
-		1:
-			if value == -1:
-				mat.albedo_color = Color(0.8, 0.1, 0.1)
+		0:  # Cachée - damier
+			if is_dark:
+				mat.albedo_color = Color(0.5, 0.5, 0.5)
 			else:
-				mat.albedo_color = Color(0.8, 0.7, 0.6) if is_dark else Color(0.9, 0.85, 0.75)
-		2:
-			mat.albedo_color = Color(0.35, 0.45, 0.35) if is_dark else Color(0.45, 0.55, 0.45)
-	update_label()
+				mat.albedo_color = Color(0.7, 0.7, 0.7)
+			if label:
+				label.text = ""
+		1:  # Révélée
+			if is_dark:
+				mat.albedo_color = Color(0.9, 0.9, 0.9)
+			else:
+				mat.albedo_color = Color(1, 1, 1)
+			if label:
+				if value == -1:
+					label.text = "💣"
+				elif value > 0:
+					label.text = str(value)
+				else:
+					label.text = ""
+		2:  # Flag
+			if is_dark:
+				mat.albedo_color = Color(0.8, 0.2, 0.2)
+			else:
+				mat.albedo_color = Color(1, 0.3, 0.3)
+			if label:
+				label.text = "🚩"
 
-func update_label():
-	if not label:
+func reveal():
+	if state != 0:
 		return
-	if state == 1 and value > 0:
-		label.visible = true
-		label.text = str(value)
-	else:
-		label.visible = false
+	
+	# Si board n'est pas encore initialisé, c'est un premier clic
+	if not board or board.size() == 0:
+		if parent_grid:
+			parent_grid.on_cell_clicked(self)
+		return
+	
+	# Vérifie que generator est initialisé
+	if not generator:
+		print("ERREUR: generator non initialisé pour la cellule ", grid_pos)
+		return
+	
+	# Applique le flood fill et récupère les cellules modifiées
+	var changed_cells = generator.flood_fill_reveal(board, grid_pos.y, grid_pos.x, board.size(), board[0].size())
+	
+	# Met à jour seulement les cellules qui ont changé
+	if parent_grid:
+		parent_grid.update_specific_cells(changed_cells)
+
+func toggle_flag():
+	# Empêche le flag avant la génération
+	if not board or board.size() == 0:
+		if parent_grid:
+			parent_grid.on_cell_right_clicked(self)
+		return
+	
+	if state == 0:
+		state = 2
+		board[grid_pos.y][grid_pos.x]["flag"] = true
+	elif state == 2:
+		state = 0
+		board[grid_pos.y][grid_pos.x]["flag"] = false
+	update_color()
