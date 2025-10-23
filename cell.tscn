@@ -17,7 +17,7 @@ script = ExtResource("1_mk6mh")
 mesh = SubResource("BoxMesh_6hwxq")
 
 [node name="Label3D" type="Label3D" parent="MeshInstance3D"]
-transform = Transform3D(-1, 8.742278e-08, -1.0425061e-15, 0, 1.1924881e-08, 1, 8.742278e-08, 1, -1.1924881e-08, 0, 0.114260405, 0)
+transform = Transform3D(-1, 8.74228e-08, -1.04251e-15, 0, 1.19249e-08, 1, 8.74228e-08, 1, -1.19249e-08, 0, 0.11426, 0)
 font_size = 60
 outline_size = 15
 
