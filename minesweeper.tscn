@@ -1,7 +1,8 @@
-[gd_scene load_steps=3 format=3 uid="uid://b7a05jt8pw7m7"]
+[gd_scene load_steps=4 format=3 uid="uid://b7a05jt8pw7m7"]
 
 [ext_resource type="Script" uid="uid://bvox1i3v2632a" path="res://checkerboard.gd" id="1_1jydy"]
 [ext_resource type="PackedScene" uid="uid://cjkj5coplwcnx" path="res://player.tscn" id="2_7nxku"]
+[ext_resource type="PackedScene" uid="uid://d3h7ahylysio1" path="res://background/background.tscn" id="3_xrf8k"]
 
 [node name="Minesweeper" type="Node3D"]
 script = ExtResource("1_1jydy")
@@ -11,8 +12,12 @@ transform = Transform3D(1, 0, 0, 0, 0.9233912, 0.38386023, 0, -0.38386023, 0.923
 shadow_enabled = true
 
 [node name="CharacterBody3D" parent="." instance=ExtResource("2_7nxku")]
-transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3003216, 1.0996242, 1.4482918)
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 3.3, 1, 1)
 
 [node name="Camera3D" type="Camera3D" parent="."]
 transform = Transform3D(-1, -2.9900352e-08, 8.215054e-08, 0, 0.9396927, 0.34202015, -8.742278e-08, 0.34202015, -0.9396927, 20.506199, 9.481115, -0.07943392)
 current = true
+
+[node name="Terrain" parent="." instance=ExtResource("3_xrf8k")]
+transform = Transform3D(1, 0, 0, 0, 1, 0, 0, 0, 1, 0, -20, 0)
+terrain_size = Vector2(2000, 2000)
