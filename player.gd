@@ -2,7 +2,7 @@ extends CharacterBody3D
 
 @export var base_speed: float = 7.5
 @export var max_air_speed: float = 12.0
-@export var air_accel: float = 85.0     # contrôle la force de strafe en l'air
+@export var air_accel: float = 85.0
 @export var ground_accel: float = 15.0
 @export var friction: float = 8.0
 @export var jump_force: float = 4.5
