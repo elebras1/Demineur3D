@@ -11,6 +11,7 @@ var parent_grid: Node = null
 var is_dark: bool = false
 var flag_mesh = null
 
+
 @onready var mesh_instance = $MeshInstance3D
 @onready var label = $MeshInstance3D/Label3D
 var flag = preload("res://flag.tscn")
@@ -55,6 +56,8 @@ func update_color():
 				mat.albedo_color = Color(1, 0.3, 0.3)
 
 func reveal():
+	if parent_grid.get_is_finish():
+		return
 	if state != 0:
 		return
 	
@@ -75,8 +78,16 @@ func reveal():
 	# Met à jour seulement les cellules qui ont changé
 	if parent_grid:
 		parent_grid.update_specific_cells(changed_cells)
+	if board[grid_pos.y][grid_pos.x]["mine"] :
+		var explosion = preload("res://explosion.tscn")
+		var explosion_mesh = explosion.instantiate()
+		add_child(explosion_mesh)
+		parent_grid.set_is_finish(true)
+		
 
 func toggle_flag():
+	if parent_grid.get_is_finish():
+		return
 	# Empêche le flag avant la génération
 	if not board or board.size() == 0:
 		if parent_grid:

@@ -11,6 +11,15 @@ var generator: MineSweeper = MineSweeper.new()
 var board: Array = []
 var is_first_click: bool = true
 var is_generating: bool = false
+var is_finish: bool = false
+
+func get_is_finish():
+	return is_finish
+	
+func set_is_finish(finish: bool):
+	print("bonjour")
+	is_finish = finish
+	
 
 func _ready():
 	await generate_empty_grid_3d()
@@ -86,6 +95,8 @@ func generate_board_from_first_click(first_click: Vector2i):
 
 # Appelé par les cellules lors d'un clic
 func on_cell_clicked(cell: Cell):
+	if is_finish:
+		return
 	if is_generating:
 		return
 	
@@ -96,6 +107,8 @@ func on_cell_clicked(cell: Cell):
 
 # Appelé par les cellules lors d'un clic droit
 func on_cell_right_clicked(cell: Cell):
+	if is_finish:
+		return
 	if is_first_click or is_generating:
 		return
 	
