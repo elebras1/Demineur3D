@@ -11,8 +11,11 @@ var generator: MineSweeper = MineSweeper.new()
 var board: Array = []
 var is_first_click: bool = true
 var is_generating: bool = false
+var pyramid: Pyramid
 
 func _ready():
+	pyramid = Pyramid.new()
+	pyramid.create(grid_width, grid_height, cell_size, self)
 	await generate_empty_grid_3d()
 	print("Grille prête - Cliquez pour commencer !")
 
@@ -25,7 +28,7 @@ func generate_empty_grid_3d() -> void:
 			add_child(cell)
 			cell.position = Vector3(x * cell_size, 0, y * cell_size)
 			
-			cell.grid_pos = Vector2i(x, y)  # Format (x, y)
+			cell.grid_pos = Vector2i(x, y)
 			cell.parent_grid = self
 			cell.is_dark = (x + y) % 2 == 1
 			cell.state = 0
@@ -48,25 +51,17 @@ func generate_board_from_first_click(first_click: Vector2i):
 	var safe_radius = 1
 	var max_zero_ratio = 0.5
 	
-	# CRITIQUE : Convertir (x, y) en (row, col)
-	# first_click.x = colonne, first_click.y = ligne
-	# Le générateur attend Vector2i(row, col)
 	var first_click_rowcol = Vector2i(first_click.y, first_click.x)
 	
 	print("Conversion en (row, col) = (", first_click_rowcol.x, ", ", first_click_rowcol.y, ")")
 	
-	# Génère le board
-	# use_solvable = false pour génération rapide garantissant un 0
-	# use_solvable = true pour grille garantie solvable (plus lent)
 	board = generator.create_board(grid_height, grid_width, num_mines, first_click_rowcol, safe_radius, max_zero_ratio, false)
 	
-	# Vérifie qu'il n'y a pas de mine à la position cliquée
 	if board[first_click.y][first_click.x]["mine"]:
 		print("ERREUR : Mine détectée au premier clic !")
 	else:
 		print("OK : Pas de mine au premier clic")
 	
-	# Met à jour toutes les cellules avec les vraies valeurs
 	for y in range(grid_height):
 		for x in range(grid_width):
 			var cell = grid[y][x]
@@ -80,11 +75,9 @@ func generate_board_from_first_click(first_click: Vector2i):
 	is_first_click = false
 	print("Board généré ! Révélation de la première case...")
 	
-	# Révèle automatiquement la case cliquée
 	var clicked_cell = grid[first_click.y][first_click.x]
 	clicked_cell.reveal()
 
-# Appelé par les cellules lors d'un clic
 func on_cell_clicked(cell: Cell):
 	if is_generating:
 		return
@@ -94,14 +87,12 @@ func on_cell_clicked(cell: Cell):
 	else:
 		cell.reveal()
 
-# Appelé par les cellules lors d'un clic droit
 func on_cell_right_clicked(cell: Cell):
 	if is_first_click or is_generating:
 		return
 	
 	cell.toggle_flag()
 
-# Met à jour seulement les cellules spécifiées
 func update_specific_cells(changed_cells: Array):
 	for pos in changed_cells:
 		var x = pos.x
