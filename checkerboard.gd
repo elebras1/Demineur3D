@@ -12,6 +12,7 @@ var board: Array = []
 var is_first_click: bool = true
 var is_generating: bool = false
 var is_finish: bool = false
+var pyramid: Pyramid
 
 func get_is_finish():
 	return is_finish
