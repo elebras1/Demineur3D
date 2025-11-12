@@ -1,0 +1,51 @@
+[gd_scene load_steps=7 format=3 uid="uid://d3h7ahylysio1"]
+
+[ext_resource type="Script" uid="uid://bl1m7tkaoabea" path="res://background/background.gd" id="1_p8qmt"]
+
+[sub_resource type="StandardMaterial3D" id="StandardMaterial3D_terrain"]
+albedo_color = Color(0.4, 0.5, 0.3, 1)
+roughness = 0.9
+
+[sub_resource type="PlaneMesh" id="PlaneMesh_terrain"]
+material = SubResource("StandardMaterial3D_terrain")
+size = Vector2(50, 50)
+subdivide_width = 50
+subdivide_depth = 50
+
+[sub_resource type="ProceduralSkyMaterial" id="ProceduralSkyMaterial_1"]
+sky_horizon_color = Color(0.646, 0.656, 0.67, 1)
+ground_horizon_color = Color(0.646, 0.656, 0.67, 1)
+
+[sub_resource type="Sky" id="Sky_1"]
+sky_material = SubResource("ProceduralSkyMaterial_1")
+
+[sub_resource type="Environment" id="Environment_1"]
+background_mode = 2
+sky = SubResource("Sky_1")
+ambient_light_source = 3
+ambient_light_color = Color(0.8, 0.8, 0.9, 1)
+ambient_light_energy = 0.5
+tonemap_mode = 2
+fog_enabled = true
+fog_light_color = Color(0.7, 0.75, 0.8, 1)
+fog_density = 0.001
+fog_aerial_perspective = 0.5
+fog_sky_affect = 0.5
+
+[node name="Terrain" type="Node3D"]
+script = ExtResource("1_p8qmt")
+
+[node name="TerrainMesh" type="MeshInstance3D" parent="."]
+mesh = SubResource("PlaneMesh_terrain")
+
+[node name="Vegetation" type="Node3D" parent="."]
+
+[node name="Rocks" type="Node3D" parent="."]
+
+[node name="DirectionalLight3D" type="DirectionalLight3D" parent="."]
+transform = Transform3D(0.866025, -0.433013, 0.25, 0, 0.5, 0.866025, -0.5, -0.75, 0.433013, 0, 20, 0)
+light_energy = 0.8
+shadow_enabled = true
+
+[node name="WorldEnvironment" type="WorldEnvironment" parent="."]
+environment = SubResource("Environment_1")
