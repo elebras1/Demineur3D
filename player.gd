@@ -18,7 +18,8 @@ var pitch: float = 0.0
 func _ready():
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
 	ray.enabled = true
-	ray.collision_mask = 1 
+	collision_layer = 1
+	collision_mask = 1 | 2
 
 func _unhandled_input(event):
 	if event is InputEventMouseMotion:
