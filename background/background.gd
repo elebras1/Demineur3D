@@ -50,7 +50,7 @@ func generate_terrain():
 	var new_mesh = surface_tool.commit()
 	
 	var mat = StandardMaterial3D.new()
-	mat.albedo_color = Color(0.4, 0.5, 0.3, 1)
+	mat.albedo_color = Color(0.927, 0.738, 0.0, 1.0)
 	mat.roughness = 0.9
 	# RETIRÉ : mat.cull_mode = BaseMaterial3D.CULL_DISABLED
 	new_mesh.surface_set_material(0, mat)

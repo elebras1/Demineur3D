@@ -10,6 +10,8 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	var static_body = StaticBody3D.new()
 	parent.add_child(static_body)
 	pyramid_body = static_body
+	pyramid_body.collision_layer = 2
+	pyramid_body.collision_mask = 0
 	
 	var mesh_instance = MeshInstance3D.new()
 	static_body.add_child(mesh_instance)
