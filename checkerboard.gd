@@ -13,16 +13,28 @@ var is_first_click: bool = true
 var is_generating: bool = false
 var is_finish: bool = false
 var pyramid: Pyramid
+var grid_root := Node3D.new()
+
 
 func get_is_finish():
 	return is_finish
 	
 func set_is_finish(finish: bool):
-	print("bonjour")
 	is_finish = finish
-	
+	if is_finish:
+		print("Partie terminée. Redémarrage dans 30 secondes...")
+		restart_after_delay(3)
+
+func restart_after_delay(seconds: float) -> void:
+	await get_tree().create_timer(seconds).timeout
+	restart_game()
+
+func restart_game():
+	get_tree().change_scene_to_file("res://main_menu/main_menu.tscn")
+
 
 func _ready():
+	add_child(grid_root)
 	pyramid = Pyramid.new()
 	pyramid.create(grid_width, grid_height, cell_size, self)
 	await generate_empty_grid_3d()
@@ -34,7 +46,7 @@ func generate_empty_grid_3d() -> void:
 		var row = []
 		for x in range(grid_width):
 			var cell = cell_scene.instantiate()
-			add_child(cell)
+			grid_root.add_child(cell)
 			cell.position = Vector3(x * cell_size, 0, y * cell_size)
 			
 			cell.grid_pos = Vector2i(x, y)
