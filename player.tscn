@@ -1,7 +1,8 @@
-[gd_scene load_steps=4 format=3 uid="uid://cjkj5coplwcnx"]
+[gd_scene load_steps=5 format=3 uid="uid://iwi6e6cv05wv"]
 
 [ext_resource type="Script" path="res://player.gd" id="1_4flbx"]
 [ext_resource type="Script" path="res://Label.gd" id="2_743ec"]
+[ext_resource type="AudioStream" uid="uid://bui48lax5rshq" path="res://song.mp3" id="3_i3pqv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
 
@@ -27,3 +28,7 @@ script = ExtResource("2_743ec")
 
 [node name="CollisionShape3D" type="CollisionShape3D" parent="."]
 shape = SubResource("CapsuleShape3D_sh265")
+
+[node name="AudioStreamPlayer" type="AudioStreamPlayer" parent="."]
+stream = ExtResource("3_i3pqv")
+autoplay = true
