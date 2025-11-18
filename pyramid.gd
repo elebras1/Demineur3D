@@ -13,14 +13,13 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	pyramid_body.collision_layer = 2
 	pyramid_body.collision_mask = 1
 
-	
 	var mesh_instance = MeshInstance3D.new()
 	static_body.add_child(mesh_instance)
 	
 	var top_width = grid_width * cell_size
 	var top_depth = grid_height * cell_size
 	
-	var base_multiplier = 7.0
+	var base_multiplier = 12.0
 	var base_width = top_width * base_multiplier
 	var base_depth = top_depth * base_multiplier
 	
@@ -33,9 +32,9 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	# Sommets de la tête plate (en haut)
 	var top_positions = [
 		Vector3(-0.5, 0, -0.5),
-		Vector3(top_width -0.5, 0, -0.5),
-		Vector3(top_width -0.5, 0, top_depth + -0.5),
-		Vector3(-0.5, 0, top_depth + -0.5)
+		Vector3(top_width - 0.5, 0, -0.5),
+		Vector3(top_width - 0.5, 0, top_depth - 0.5),
+		Vector3(-0.5, 0, top_depth - 0.5)
 	]
 	
 	# Sommets de la base (en bas)
@@ -59,9 +58,12 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	
 	# Face gauche
 	add_quad(surface_tool, base_positions[3], base_positions[0], top_positions[0], top_positions[3])
-	
+
 	# Face du bas
 	add_quad(surface_tool, base_positions[3], base_positions[2], base_positions[1], base_positions[0])
+	
+	surface_tool.generate_normals()
+	surface_tool.generate_tangents()
 	
 	var mesh = surface_tool.commit()
 	mesh_instance.mesh = mesh
@@ -72,8 +74,10 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	# Matériau pour la pyramide avec texture
 	var material = StandardMaterial3D.new()
 	material.albedo_texture = texture
-	material.uv1_scale = Vector3(10.0, 10.0, 1.0)  # Répétition 10x
+	material.uv1_scale = Vector3(10.0, 10.0, 1.0)
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
+	# S'assurer que le matériau n'est pas en mode Unshaded
+	material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	mesh_instance.material_override = material
 	
 	pyramid_mesh = mesh_instance
@@ -120,9 +124,10 @@ func add_face_collision(body: StaticBody3D, vertices: Array):
 	collision.shape = shape
 	body.add_child(collision)
 
-# Fonction helper pour ajouter un quad (2 triangles) avec UVs
 func add_quad(st: SurfaceTool, v1: Vector3, v2: Vector3, v3: Vector3, v4: Vector3):
-	var normal = (v2 - v1).cross(v3 - v1).normalized()
+	var edge1 = v2 - v1
+	var edge2 = v4 - v1
+	var normal = edge1.cross(edge2).normalized()
 	
 	# Triangle 1
 	st.set_normal(normal)
