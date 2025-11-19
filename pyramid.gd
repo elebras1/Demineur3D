@@ -38,8 +38,9 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	]
 	
 	# Sommets de la base (en bas)
-	var base_offset_x = (base_width - top_width) / 2.0 
+	var base_offset_x = (base_width - top_width) / 2.0
 	var base_offset_z = (base_depth - top_depth) / 2.0
+	
 	var base_positions = [
 		Vector3(-base_offset_x, -pyramid_height, -base_offset_z),
 		Vector3(top_width + base_offset_x, -pyramid_height, -base_offset_z),
@@ -71,12 +72,19 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	# Charger et appliquer la texture
 	var texture = load("res://pyramide.png")
 	
-	# Matériau pour la pyramide avec texture
+	# --- CORRECTION DU MATÉRIAU (Mapping Triplanaire) ---
 	var material = StandardMaterial3D.new()
 	material.albedo_texture = texture
-	material.uv1_scale = Vector3(10.0, 10.0, 1.0)
+	
+	# Active le mode triplanar pour projeter la texture proprement sur les pentes
+	material.uv1_triplanar = true
+	
+	# Ajuste la netteté du mélange des textures aux angles
+	material.uv1_triplanar_sharpness = 5.0
+	
+	material.uv1_scale = Vector3(0.2, 0.2, 0.2) 
+	
 	material.texture_filter = BaseMaterial3D.TEXTURE_FILTER_LINEAR_WITH_MIPMAPS
-	# S'assurer que le matériau n'est pas en mode Unshaded
 	material.shading_mode = BaseMaterial3D.SHADING_MODE_PER_PIXEL
 	mesh_instance.material_override = material
 	
@@ -90,25 +98,18 @@ func create_collision(body: StaticBody3D, top_pos: Array, base_pos: Array, grid_
 	# Face du dessus (plate) - simple BoxShape
 	var top_collision = CollisionShape3D.new()
 	var top_shape = BoxShape3D.new()
-	var top_width = grid_width * cell_size
-	var top_depth = grid_height * cell_size
-	top_shape.size = Vector3(top_width + 1.0, 0.05, top_depth + 1.0)
+	var top_width_val = grid_width * cell_size # Renommé pour éviter conflit de nom
+	var top_depth_val = grid_height * cell_size
+	top_shape.size = Vector3(top_width_val + 1.0, 0.2, top_depth_val + 1.0)
 	top_collision.shape = top_shape
-	top_collision.position = Vector3(top_width / 2.0 - 0.5, -5, top_depth / 2.0 - 0.5)
+	top_collision.position = Vector3(top_width_val / 2.0 - 0.5, 0.1, top_depth_val / 2.0 - 0.5)
 	body.add_child(top_collision)
 	
 	# Pour les faces inclinées, utiliser des ConvexPolygonShape
-	# Face avant
-	add_face_collision(body, [base_pos[0], base_pos[1], top_pos[1], top_pos[0]])
-	
-	# Face droite
-	add_face_collision(body, [base_pos[1], base_pos[2], top_pos[2], top_pos[1]])
-	
-	# Face arrière
-	add_face_collision(body, [base_pos[2], base_pos[3], top_pos[3], top_pos[2]])
-	
-	# Face gauche
-	add_face_collision(body, [base_pos[3], base_pos[0], top_pos[0], top_pos[3]])
+	add_face_collision(body, [base_pos[0], base_pos[1], top_pos[1], top_pos[0]]) # Avant
+	add_face_collision(body, [base_pos[1], base_pos[2], top_pos[2], top_pos[1]]) # Droite
+	add_face_collision(body, [base_pos[2], base_pos[3], top_pos[3], top_pos[2]]) # Arrière
+	add_face_collision(body, [base_pos[3], base_pos[0], top_pos[0], top_pos[3]]) # Gauche
 
 # Ajoute une collision pour une face de la pyramide
 func add_face_collision(body: StaticBody3D, vertices: Array):
@@ -125,32 +126,37 @@ func add_face_collision(body: StaticBody3D, vertices: Array):
 	body.add_child(collision)
 
 func add_quad(st: SurfaceTool, v1: Vector3, v2: Vector3, v3: Vector3, v4: Vector3):
+	# Calculer la normale pour cette face
 	var edge1 = v2 - v1
 	var edge2 = v4 - v1
 	var normal = edge1.cross(edge2).normalized()
 	
-	# Triangle 1
+	# Ajouter les 6 vertices (2 triangles). 
+	# Note: Les UVs définis ici sont ignorés par le rendu Triplanar activé plus haut,
+	# mais on les laisse pour la propreté du mesh.
+	
+	# Triangle 1: v1 -> v2 -> v3
 	st.set_normal(normal)
-	st.set_uv(Vector2(0, 0))
+	st.set_uv(Vector2(0, 1))
+	st.add_vertex(v1)
+	
+	st.set_normal(normal)
+	st.set_uv(Vector2(1, 1))
+	st.add_vertex(v2)
+	
+	st.set_normal(normal)
+	st.set_uv(Vector2(1, 0))
+	st.add_vertex(v3)
+	
+	# Triangle 2: v1 -> v3 -> v4
+	st.set_normal(normal)
+	st.set_uv(Vector2(0, 1))
 	st.add_vertex(v1)
 	
 	st.set_normal(normal)
 	st.set_uv(Vector2(1, 0))
-	st.add_vertex(v2)
-	
-	st.set_normal(normal)
-	st.set_uv(Vector2(1, 1))
 	st.add_vertex(v3)
 	
-	# Triangle 2
 	st.set_normal(normal)
 	st.set_uv(Vector2(0, 0))
-	st.add_vertex(v1)
-	
-	st.set_normal(normal)
-	st.set_uv(Vector2(1, 1))
-	st.add_vertex(v3)
-	
-	st.set_normal(normal)
-	st.set_uv(Vector2(0, 1))
 	st.add_vertex(v4)
