@@ -2,7 +2,6 @@ extends Node3D
 class_name Cell
 
 # IMPORTANT: Ne PAS utiliser @export pour les données de jeu
-# @export sauvegarde les valeurs dans la scène .tscn
 var grid_pos: Vector2i
 var value: int = 0
 var board: Array = []
@@ -15,25 +14,35 @@ var flag_mesh = null
 @onready var mesh_instance = $MeshInstance3D
 @onready var label = $MeshInstance3D/Label3D
 
-var flag = preload("res://flag.tscn")
+var flag_scene = preload("res://flag.tscn") # Renommé pour éviter la confusion avec la variable 'flag'
+
+# Couleurs standards du Démineur pour les chiffres 1 à 8
+const NUMBER_COLORS = {
+	1: Color(0.0, 0.0, 1.0),      # Bleu
+	2: Color(0.0, 0.5, 0.0),      # Vert
+	3: Color(1.0, 0.0, 0.0),      # Rouge
+	4: Color(0.0, 0.0, 0.5),      # Bleu foncé
+	5: Color(0.5, 0.0, 0.0),      # Marron/Rouge foncé
+	6: Color(0.0, 0.5, 0.5),      # Cyan
+	7: Color(0.0, 0.0, 0.0),      # Noir
+	8: Color(0.5, 0.5, 0.5)       # Gris
+}
 
 func _ready():
-	value = 0
-	state = 0
-	board = []
-	generator = null
-	
+	# Initialisation propre
 	if label:
 		label.text = ""
-	if label:
-		label.text = ""
+		# Optionnel : Désactiver le filtre de texture pour un look pixel-art net si besoin
+		# label.pixel_size = 0.005 
 	
-	# Créer un matériau pour chaque cellule
+	# Créer un matériau unique pour cette cellule pour pouvoir changer sa couleur
 	if mesh_instance:
 		var mat = StandardMaterial3D.new()
+		# Optionnel : Réduire la brillance pour un look plus "carton/terre"
+		mat.specular_mode = BaseMaterial3D.SPECULAR_DISABLED
 		mesh_instance.material_override = mat
 	
-	# Attendre un frame puis mettre à jour
+	# Attendre un frame pour s'assurer que les variables is_dark/grid_pos sont set
 	await get_tree().process_frame
 	update_color()
 
@@ -44,107 +53,110 @@ func update_color():
 	var mat = mesh_instance.material_override as StandardMaterial3D
 	
 	match state:
-		0:  # Cachée - damier
+		0:  # CACHÉE (Case non cliquée)
+			# On garde l'effet damier
 			if is_dark:
-				mat.albedo_color = Color(0.5, 0.5, 0.5)
+				mat.albedo_color = Color(0.5, 0.5, 0.5) # Gris moyen
 			else:
-				mat.albedo_color = Color(0.7, 0.7, 0.7)
-			if label:
-				label.text = ""
-			# Supprimer le flag s'il existe
-			if flag_mesh:
-				flag_mesh.queue_free()
-				flag_mesh = null
-				
-		1:  # Révélée
+				mat.albedo_color = Color(0.6, 0.6, 0.6) # Gris légèrement plus clair
+			
+			if label: label.text = ""
+			_remove_flag()
+
+		1:  # RÉVÉLÉE
+			# Le fond devient plus clair (effet "creusé")
 			if is_dark:
-				mat.albedo_color = Color(0.9, 0.9, 0.9)
+				mat.albedo_color = Color(0.85, 0.85, 0.85) # Blanc cassé sombre
 			else:
-				mat.albedo_color = Color(1, 1, 1)
+				mat.albedo_color = Color(0.95, 0.95, 0.95) # Blanc cassé clair
+			
+			_remove_flag()
+			
 			if label:
 				if value == -1:
 					label.text = "💣"
+					label.modulate = Color(0, 0, 0) # Bombe noire
+					mat.albedo_color = Color(1, 0.3, 0.3) # Fond ROUGE pour l'explosion
 				elif value > 0:
 					label.text = str(value)
+					# Application de la couleur du chiffre
+					label.modulate = NUMBER_COLORS.get(value, Color.BLACK)
 				else:
-					label.text = ""
-			# Supprimer le flag s'il existe
-			if flag_mesh:
-				flag_mesh.queue_free()
-				flag_mesh = null
-				
-		2:  # Flag
+					label.text = "" # Case vide (0)
+
+		2:  # FLAG (Drapeau posé)
+			# On garde la couleur de fond "Cachée" car le sol n'est pas creusé
+			# Mais on peut mettre une légère teinte rouge pour aider visuellement si tu veux
 			if is_dark:
-				mat.albedo_color = Color(0.8, 0.2, 0.2)
+				mat.albedo_color = Color(0.5, 0.4, 0.4) 
 			else:
-				mat.albedo_color = Color(1, 0.3, 0.3)
-			if label:
-				label.text = ""
+				mat.albedo_color = Color(0.6, 0.5, 0.5)
+			
+			if label: label.text = ""
+			
+			# Instanciation du mesh de drapeau s'il n'est pas là
+			if not flag_mesh and flag_scene:
+				flag_mesh = flag_scene.instantiate()
+				add_child(flag_mesh)
+
+# Helper pour nettoyer le code
+func _remove_flag():
+	if flag_mesh:
+		flag_mesh.queue_free()
+		flag_mesh = null
 
 func reveal():
-	if parent_grid.get_is_finish():
+	if not parent_grid or parent_grid.get_is_finish():
 		return
-	if state != 0:
+	if state != 0: # On ne révèle pas si c'est déjà révélé ou s'il y a un drapeau
 		return
 	
-	# Si board n'est pas encore initialisé, c'est un premier clic
+	# Premier clic (génération)
 	if not board or board.size() == 0:
-		if parent_grid:
-			parent_grid.on_cell_clicked(self)
+		parent_grid.on_cell_clicked(self)
 		return
 	
-	# Vérifie que generator est initialisé
 	if not generator:
-		print("ERREUR: generator non initialisé pour la cellule ", grid_pos)
+		print("ERREUR: generator non initialisé")
 		return
 	
-	# Applique le flood fill et récupère les cellules modifiées
+	# Flood fill
 	var changed_cells = generator.flood_fill_reveal(board, grid_pos.y, grid_pos.x, board.size(), board[0].size())
+	parent_grid.update_specific_cells(changed_cells)
 	
-	# Met à jour seulement les cellules qui ont changé
-	if parent_grid:
-		parent_grid.update_specific_cells(changed_cells)
-	
+	# Gestion Explosion
 	if board[grid_pos.y][grid_pos.x]["mine"]:
 		var explosion = preload("res://explosion.tscn")
-		var explosion_mesh = explosion.instantiate()
-		add_child(explosion_mesh)
+		if explosion:
+			var explosion_mesh = explosion.instantiate()
+			add_child(explosion_mesh)
 	
-	if is_finished()["finished"]:
-		parent_grid.set_is_finish(is_finished())
-		if is_finished()["won"]:
-			parent_grid.restart_after_delay(10)
-		else:
-			parent_grid.restart_after_delay(10)
-	
-	
+	# Vérification fin de partie
+	var game_status = is_finished()
+	if game_status["finished"]:
+		parent_grid.set_is_finish(game_status)
+		# Le délai de restart est géré ici
+		parent_grid.restart_after_delay(5 if game_status["won"] else 3)
+
 func toggle_flag():
-	if parent_grid.get_is_finish():
-		return
-	# Empêche le flag avant la génération
-	if not board or board.size() == 0:
-		if parent_grid:
-			parent_grid.on_cell_right_clicked(self)
+	if not parent_grid or parent_grid.get_is_finish():
 		return
 	
-	if state == 0:
+	# Empêche le flag avant la génération du plateau
+	if not board or board.size() == 0:
+		parent_grid.on_cell_right_clicked(self)
+		return
+	
+	if state == 0: # De caché vers Flag
 		state = 2
 		board[grid_pos.y][grid_pos.x]["flag"] = true
-		if not flag_mesh:
-			flag_mesh = flag.instantiate()
-			add_child(flag_mesh)
+		update_color() # Appel direct à update_color qui gère l'instanciation
 		
-	elif state == 2:
+	elif state == 2: # De Flag vers caché
 		state = 0
 		board[grid_pos.y][grid_pos.x]["flag"] = false
-		
-		if flag_mesh:
-			flag_mesh.queue_free()
-			flag_mesh = null
+		update_color() # Appel direct à update_color qui gère la suppression
 
-
-# Vérifie si la partie est terminée
-# Retourne: { "finished": bool, "won": bool }
 func is_finished() -> Dictionary:
 	if not board or board.size() == 0:
 		return {"finished": false, "won": false}
@@ -156,23 +168,18 @@ func is_finished() -> Dictionary:
 	
 	for r in range(rows):
 		for c in range(cols):
-			var cell = board[r][c]
+			var cell_data = board[r][c]
 			
-			# Si une mine est révélée = défaite
-			if cell["mine"] and cell["revealed"]:
+			if cell_data["mine"] and cell_data["revealed"]:
 				mine_revealed = true
 			
-			# Si une case non-mine n'est pas révélée = pas encore gagné
-			if not cell["mine"] and not cell["revealed"]:
+			if not cell_data["mine"] and not cell_data["revealed"]:
 				all_safe_revealed = false
 	
-	# Défaite si mine révélée
 	if mine_revealed:
 		return {"finished": true, "won": false}
 	
-	# Victoire si toutes les cases sûres sont révélées
 	if all_safe_revealed:
 		return {"finished": true, "won": true}
 	
-	# Partie en cours
 	return {"finished": false, "won": false}
