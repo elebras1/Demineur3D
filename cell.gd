@@ -14,6 +14,7 @@ var flag_mesh = null
 
 @onready var mesh_instance = $MeshInstance3D
 @onready var label = $MeshInstance3D/Label3D
+
 var flag = preload("res://flag.tscn")
 
 func _ready():
@@ -108,8 +109,15 @@ func reveal():
 		var explosion = preload("res://explosion.tscn")
 		var explosion_mesh = explosion.instantiate()
 		add_child(explosion_mesh)
-		parent_grid.set_is_finish(true)
-
+	
+	if is_finished()["finished"]:
+		parent_grid.set_is_finish(is_finished())
+		if is_finished()["won"]:
+			parent_grid.restart_after_delay(10)
+		else:
+			parent_grid.restart_after_delay(10)
+	
+	
 func toggle_flag():
 	if parent_grid.get_is_finish():
 		return
@@ -133,3 +141,38 @@ func toggle_flag():
 		if flag_mesh:
 			flag_mesh.queue_free()
 			flag_mesh = null
+
+
+# Vérifie si la partie est terminée
+# Retourne: { "finished": bool, "won": bool }
+func is_finished() -> Dictionary:
+	if not board or board.size() == 0:
+		return {"finished": false, "won": false}
+	
+	var rows = board.size()
+	var cols = board[0].size()
+	var mine_revealed := false
+	var all_safe_revealed := true
+	
+	for r in range(rows):
+		for c in range(cols):
+			var cell = board[r][c]
+			
+			# Si une mine est révélée = défaite
+			if cell["mine"] and cell["revealed"]:
+				mine_revealed = true
+			
+			# Si une case non-mine n'est pas révélée = pas encore gagné
+			if not cell["mine"] and not cell["revealed"]:
+				all_safe_revealed = false
+	
+	# Défaite si mine révélée
+	if mine_revealed:
+		return {"finished": true, "won": false}
+	
+	# Victoire si toutes les cases sûres sont révélées
+	if all_safe_revealed:
+		return {"finished": true, "won": true}
+	
+	# Partie en cours
+	return {"finished": false, "won": false}

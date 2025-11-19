@@ -275,3 +275,32 @@ func create_board(rows: int, cols: int, n_mines: int, first_click := Vector2i(0,
 		return generate_mines_solvable(rows, cols, n_mines, first_click, safe_radius, max_zero_block_ratio)
 	else:
 		return generate_mines_classic(rows, cols, n_mines, first_click, safe_radius)
+
+# Vérifie si la partie est terminée
+# Retourne: { "finished": bool, "won": bool }
+func is_finished(board: Array, rows: int, cols: int) -> Dictionary:
+	var mine_revealed := false
+	var all_safe_revealed := true
+	
+	for r in range(rows):
+		for c in range(cols):
+			var cell = board[r][c]
+			
+			# Si une mine est révélée = défaite
+			if cell["mine"] and cell["revealed"]:
+				mine_revealed = true
+			
+			# Si une case non-mine n'est pas révélée = pas encore gagné
+			if not cell["mine"] and not cell["revealed"]:
+				all_safe_revealed = false
+	
+	# Défaite si mine révélée
+	if mine_revealed:
+		return {"finished": true, "won": false}
+	
+	# Victoire si toutes les cases sûres sont révélées
+	if all_safe_revealed:
+		return {"finished": true, "won": true}
+	
+	# Partie en cours
+	return {"finished": false, "won": false}

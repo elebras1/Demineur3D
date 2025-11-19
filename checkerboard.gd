@@ -14,16 +14,60 @@ var is_generating: bool = false
 var is_finish: bool = false
 var pyramid: Pyramid
 var grid_root : Node3D
-
+var win_label: Label3D = null
 
 func get_is_finish():
 	return is_finish
 	
-func set_is_finish(finish: bool):
-	is_finish = finish
-	if is_finish:
-		restart_after_delay(10)
+func set_is_finish(finish: Dictionary):
+	is_finish = finish["finished"]
+	
+	if finish["won"]:
+		show_win_label()
+	else:
+		show_lose_label()
+	
 
+func show_win_label():
+	if win_label:
+		win_label.queue_free()
+	
+	win_label = Label3D.new()
+	add_child(win_label)
+	
+	# Position au centre de la grille, en hauteur
+	var center_x = (grid_width * cell_size) / 2.0
+	var center_z = (grid_height * cell_size) / 2.0
+	win_label.position = Vector3(center_x, 3.0, center_z)
+	
+	# Texte et style
+	win_label.text = "🎉 VICTORY! 🎉"
+	win_label.font_size = 128
+	win_label.modulate = Color(0, 1, 0)  # Vert
+	win_label.outline_size = 8
+	win_label.outline_modulate = Color(0, 0, 0)
+	win_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+
+func show_lose_label():
+	if win_label:
+		win_label.queue_free()
+	
+	win_label = Label3D.new()
+	add_child(win_label)
+	
+	# Position au centre de la grille, en hauteur
+	var center_x = (grid_width * cell_size) / 2.0
+	var center_z = (grid_height * cell_size) / 2.0
+	win_label.position = Vector3(center_x, 3.0, center_z)
+	
+	# Texte et style
+	win_label.text = "💥 GAME OVER 💥"
+	win_label.font_size = 128
+	win_label.modulate = Color(1, 0, 0)  # Rouge
+	win_label.outline_size = 8
+	win_label.outline_modulate = Color(0, 0, 0)
+	win_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
+	
 func restart_after_delay(seconds: float) -> void:
 	await get_tree().create_timer(seconds).timeout
 	restart_game()
