@@ -38,7 +38,8 @@ func _ready():
 	add_child(generator)
 	add_child(grid_root)
 	pyramid = Pyramid.new()
-	pyramid.create(grid_width, grid_height, cell_size, self)
+	pyramid.create(grid_width, grid_height , cell_size, self)
+	pyramid.pyramid_body.position.y = pyramid.pyramid_body.position.y + 0.1
 	await generate_empty_grid_3d()
 
 # Génère une grille vide (sans mines)
