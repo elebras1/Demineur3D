@@ -13,23 +13,24 @@ var difficulties: Dictionary = {
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	play_button.pressed.connect(_on_PlayButton_pressed)
-
 func _on_PlayButton_pressed() -> void:
 	var minesweeper_scene: Node = load("res://minesweeper.tscn").instantiate() as Node
-
 	var diff_index: int = int(option_button.selected)
 	var cfg: Dictionary = difficulties.get(diff_index, difficulties[0])
-
+	
 	minesweeper_scene.set("grid_width", cfg["cols"])
 	minesweeper_scene.set("grid_height", cfg["rows"])
 	minesweeper_scene.set("num_mines", cfg["mines"])
-
-	if get_tree().current_scene:
-		get_tree().current_scene.queue_free()
-	get_tree().current_scene = minesweeper_scene
+	
+	# CORRECTION : Utiliser change_scene_to_packed au lieu de manipuler current_scene
 	get_tree().root.add_child(minesweeper_scene)
-
+	get_tree().current_scene = minesweeper_scene
+	
+	# Libérer l'ancien menu
+	queue_free()
+	
 	Input.set_mouse_mode(Input.MOUSE_MODE_CAPTURED)
+	
 	var player: Node = minesweeper_scene.get_node_or_null("CharacterBody3D")
 	if player:
 		var player_cam: Node = player.get_node_or_null("Camera3D")

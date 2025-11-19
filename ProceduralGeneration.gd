@@ -166,9 +166,6 @@ func generate_mines_classic(rows: int, cols: int, n_mines: int, first_click: Vec
 	
 	calculate_numbers(board, rows, cols)
 	
-	# Vérifie que le premier clic est bien un 0
-	print("Valeur au premier clic (", first_click.x, ",", first_click.y, ") = ", board[first_click.x][first_click.y]["num"])
-	
 	return board
 
 
@@ -252,7 +249,6 @@ func generate_valid_board(rows: int, cols: int, n_mines: int, first_click: Vecto
 
 		# Vérifie la solvabilité
 		if is_solvable(deep_copy_board(board, rows, cols), rows, cols, first_click):
-			print("Grille SOLVABLE trouvée en ", attempts, " tentatives")
 			return board
 
 	print("Limite de tentatives atteinte - génération en mode classique")
