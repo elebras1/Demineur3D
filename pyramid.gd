@@ -102,7 +102,7 @@ func create_collision(body: StaticBody3D, top_pos: Array, base_pos: Array, grid_
 	var top_depth_val = grid_height * cell_size
 	top_shape.size = Vector3(top_width_val + 1.0, 0.2, top_depth_val + 1.0)
 	top_collision.shape = top_shape
-	top_collision.position = Vector3(top_width_val / 2.0 - 0.5, 0.1, top_depth_val / 2.0 - 0.5)
+	top_collision.position = Vector3(top_width_val / 2.0 - 0.5, -5, top_depth_val / 2.0 - 0.5)
 	body.add_child(top_collision)
 	
 	# Pour les faces inclinées, utiliser des ConvexPolygonShape
