@@ -22,7 +22,7 @@ func get_is_finish():
 func set_is_finish(finish: bool):
 	is_finish = finish
 	if is_finish:
-		restart_after_delay(3)
+		restart_after_delay(10)
 
 func restart_after_delay(seconds: float) -> void:
 	await get_tree().create_timer(seconds).timeout
