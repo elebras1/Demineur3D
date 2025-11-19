@@ -53,51 +53,49 @@ func update_color():
 	var mat = mesh_instance.material_override as StandardMaterial3D
 	
 	match state:
-		0:  # CACHÉE (Case non cliquée)
-			# On garde l'effet damier
+		0:  # CACHÉE (Case NON cliquée) → couleur sombre
 			if is_dark:
-				mat.albedo_color = Color(0.5, 0.5, 0.5) # Gris moyen
+				mat.albedo_color = Color(0.55, 0.50, 0.40) # Cachée sombre
 			else:
-				mat.albedo_color = Color(0.6, 0.6, 0.6) # Gris légèrement plus clair
-			
+				mat.albedo_color = Color(0.65, 0.60, 0.50) # Cachée claire
+
 			if label: label.text = ""
 			_remove_flag()
 
-		1:  # RÉVÉLÉE
-			# Le fond devient plus clair (effet "creusé")
+
+		1:  # RÉVÉLÉE → couleur claire (par défaut maintenant)
 			if is_dark:
-				mat.albedo_color = Color(0.85, 0.85, 0.85) # Blanc cassé sombre
+				mat.albedo_color = Color(0.70, 0.65, 0.55) # Cachée sombre
 			else:
-				mat.albedo_color = Color(0.95, 0.95, 0.95) # Blanc cassé clair
-			
+				mat.albedo_color = Color(0.75, 0.70, 0.60) # Cachée claire
+
 			_remove_flag()
-			
+
 			if label:
 				if value == -1:
 					label.text = "💣"
-					label.modulate = Color(0, 0, 0) # Bombe noire
-					mat.albedo_color = Color(1, 0.3, 0.3) # Fond ROUGE pour l'explosion
+					label.modulate = Color(0, 0, 0)
+					mat.albedo_color = Color(1, 0.3, 0.3)
 				elif value > 0:
 					label.text = str(value)
-					# Application de la couleur du chiffre
 					label.modulate = NUMBER_COLORS.get(value, Color.BLACK)
 				else:
-					label.text = "" # Case vide (0)
+					label.text = ""
 
-		2:  # FLAG (Drapeau posé)
-			# On garde la couleur de fond "Cachée" car le sol n'est pas creusé
-			# Mais on peut mettre une légère teinte rouge pour aider visuellement si tu veux
+
+		2:  # FLAG
 			if is_dark:
-				mat.albedo_color = Color(0.5, 0.4, 0.4) 
+				mat.albedo_color = Color(0.78, 0.70, 0.65)
 			else:
-				mat.albedo_color = Color(0.6, 0.5, 0.5)
-			
+				mat.albedo_color = Color(0.83, 0.75, 0.70)
+
 			if label: label.text = ""
-			
-			# Instanciation du mesh de drapeau s'il n'est pas là
+
 			if not flag_mesh and flag_scene:
 				flag_mesh = flag_scene.instantiate()
 				add_child(flag_mesh)
+
+
 
 # Helper pour nettoyer le code
 func _remove_flag():
