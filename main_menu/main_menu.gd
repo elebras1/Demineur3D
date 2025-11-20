@@ -2,6 +2,7 @@ extends Node
 
 @onready var play_button: Button = $CanvasLayer/VBoxContainer/Button
 @onready var option_button: OptionButton = $CanvasLayer/VBoxContainer/OptionButton
+@onready var sub_viewport: SubViewport = $SubViewportContainer/SubViewport
 
 var difficulties: Dictionary = {
 	0: {"rows": 10, "cols": 10, "mines": 10},    # Facile
@@ -13,6 +14,8 @@ var difficulties: Dictionary = {
 func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	play_button.pressed.connect(_on_PlayButton_pressed)
+	get_viewport().size_changed.connect(_on_window_resize)
+	_on_window_resize()  # applique immédiatement
 func _on_PlayButton_pressed() -> void:
 	var minesweeper_scene: Node = load("res://main/minesweeper.tscn").instantiate() as Node
 	var diff_index: int = int(option_button.selected)
@@ -36,3 +39,8 @@ func _on_PlayButton_pressed() -> void:
 		var player_cam: Node = player.get_node_or_null("Camera3D")
 		if player_cam:
 			player_cam.current = true
+			
+			
+func _on_window_resize() -> void:
+	var window_size = DisplayServer.window_get_size()
+	sub_viewport.size = window_size
