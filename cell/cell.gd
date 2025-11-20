@@ -14,7 +14,7 @@ var flag_mesh = null
 @onready var mesh_instance = $MeshInstance3D
 @onready var label = $MeshInstance3D/Label3D
 
-var flag_scene = preload("res://flag.tscn") # Renommé pour éviter la confusion avec la variable 'flag'
+var flag_scene = preload("res://cell/flag.tscn") # Renommé pour éviter la confusion avec la variable 'flag'
 
 # Couleurs standards du Démineur pour les chiffres 1 à 8
 const NUMBER_COLORS = {
@@ -124,7 +124,7 @@ func reveal():
 	
 	# Gestion Explosion
 	if board[grid_pos.y][grid_pos.x]["mine"]:
-		var explosion = preload("res://explosion.tscn")
+		var explosion = preload("res://fx/explosion.tscn")
 		if explosion:
 			var explosion_mesh = explosion.instantiate()
 			add_child(explosion_mesh)

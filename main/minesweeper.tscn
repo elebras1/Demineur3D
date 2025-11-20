@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://cas4o7p83k1wd"]
 
-[ext_resource type="Script" path="res://checkerboard.gd" id="1_1jydy"]
-[ext_resource type="PackedScene" path="res://player.tscn" id="2_7nxku"]
+[ext_resource type="Script" uid="uid://bvox1i3v2632a" path="res://main/checkerboard.gd" id="1_1jydy"]
+[ext_resource type="PackedScene" uid="uid://iwi6e6cv05wv" path="res://player/player.tscn" id="2_7nxku"]
 [ext_resource type="PackedScene" uid="uid://d3h7ahylysio1" path="res://background/background.tscn" id="3_xrf8k"]
 
 [node name="Minesweeper" type="Node3D"]

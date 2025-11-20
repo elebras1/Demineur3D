@@ -5,7 +5,7 @@ extends Node3D
 @export var cell_size: float = 1.0
 @export var num_mines: int = 300
 
-var cell_scene = preload("res://cell.tscn")
+var cell_scene = preload("res://cell/cell.tscn")
 var grid: Array = []
 var generator: MineSweeper
 var board: Array = []

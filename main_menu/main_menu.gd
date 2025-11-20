@@ -14,7 +14,7 @@ func _ready() -> void:
 	Input.set_mouse_mode(Input.MOUSE_MODE_VISIBLE)
 	play_button.pressed.connect(_on_PlayButton_pressed)
 func _on_PlayButton_pressed() -> void:
-	var minesweeper_scene: Node = load("res://minesweeper.tscn").instantiate() as Node
+	var minesweeper_scene: Node = load("res://main/minesweeper.tscn").instantiate() as Node
 	var diff_index: int = int(option_button.selected)
 	var cfg: Dictionary = difficulties.get(diff_index, difficulties[0])
 	

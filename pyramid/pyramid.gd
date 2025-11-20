@@ -70,7 +70,7 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	mesh_instance.mesh = mesh
 	
 	# Charger et appliquer la texture
-	var texture = load("res://pyramide.png")
+	var texture = load("res://pyramid/pyramide.png")
 	
 	# --- CORRECTION DU MATÉRIAU (Mapping Triplanaire) ---
 	var material = StandardMaterial3D.new()

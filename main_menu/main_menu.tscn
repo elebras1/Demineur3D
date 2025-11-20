@@ -1,7 +1,7 @@
 [gd_scene load_steps=4 format=3 uid="uid://bg86nmh0biqea"]
 
 [ext_resource type="Script" uid="uid://cs2foodspf3jc" path="res://main_menu/main_menu.gd" id="1_d3a7t"]
-[ext_resource type="PackedScene" uid="uid://b7a05jt8pw7m7" path="res://minesweeper.tscn" id="1_oa53l"]
+[ext_resource type="PackedScene" uid="uid://cas4o7p83k1wd" path="res://main/minesweeper.tscn" id="1_oa53l"]
 
 [sub_resource type="LabelSettings" id="LabelSettings_d3a7t"]
 font_size = 60

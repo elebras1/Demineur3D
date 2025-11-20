@@ -1,7 +1,7 @@
 [gd_scene load_steps=5 format=3 uid="uid://iwi6e6cv05wv"]
 
-[ext_resource type="Script" path="res://player.gd" id="1_4flbx"]
-[ext_resource type="Script" path="res://Label.gd" id="2_743ec"]
+[ext_resource type="Script" uid="uid://pwia1ho4h417" path="res://player/player.gd" id="1_4flbx"]
+[ext_resource type="Script" uid="uid://kplm4m3gyn2e" path="res://main/Label.gd" id="2_743ec"]
 [ext_resource type="AudioStream" uid="uid://bui48lax5rshq" path="res://song.mp3" id="3_i3pqv"]
 
 [sub_resource type="CapsuleShape3D" id="CapsuleShape3D_sh265"]
