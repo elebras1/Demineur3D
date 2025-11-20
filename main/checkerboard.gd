@@ -13,7 +13,7 @@ var is_first_click: bool = true
 var is_generating: bool = false
 var is_finish: bool = false
 var pyramid: Pyramid
-var grid_root : Node3D
+var grid_root: Node3D
 var win_label: Label3D = null
 
 func get_is_finish():
@@ -43,7 +43,7 @@ func show_win_label():
 	# Texte et style
 	win_label.text = "🎉 VICTORY! 🎉"
 	win_label.font_size = 128
-	win_label.modulate = Color(0, 1, 0)  # Vert
+	win_label.modulate = Color(0, 1, 0) # Vert
 	win_label.outline_size = 8
 	win_label.outline_modulate = Color(0, 0, 0)
 	win_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -63,7 +63,7 @@ func show_lose_label():
 	# Texte et style
 	win_label.text = "💥 GAME OVER 💥"
 	win_label.font_size = 128
-	win_label.modulate = Color(1, 0, 0)  # Rouge
+	win_label.modulate = Color(1, 0, 0) # Rouge
 	win_label.outline_size = 8
 	win_label.outline_modulate = Color(0, 0, 0)
 	win_label.billboard = BaseMaterial3D.BILLBOARD_ENABLED
@@ -82,7 +82,7 @@ func _ready():
 	add_child(generator)
 	add_child(grid_root)
 	pyramid = Pyramid.new()
-	pyramid.create(grid_width, grid_height , cell_size, self)
+	pyramid.create(grid_width, grid_height, cell_size, self)
 	pyramid.pyramid_body.position.y = pyramid.pyramid_body.position.y + 0.1
 	await generate_empty_grid_3d()
 
@@ -101,8 +101,8 @@ func generate_empty_grid_3d() -> void:
 			cell.is_dark = (x + y) % 2 == 1
 			cell.state = 0
 			cell.value = 0
-			cell.board = []  # Réinitialiser le board
-			cell.generator = null  # Réinitialiser le generator
+			cell.board = [] # Réinitialiser le board
+			cell.generator = null # Réinitialiser le generator
 			cell.update_color()
 			
 			row.append(cell)

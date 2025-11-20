@@ -19,7 +19,7 @@ func create(grid_width: int, grid_height: int, cell_size: float, parent: Node3D)
 	var top_width = grid_width * cell_size
 	var top_depth = grid_height * cell_size
 	
-	var base_multiplier = 12.0
+	var base_multiplier = 25.0
 	var base_width = top_width * base_multiplier
 	var base_depth = top_depth * base_multiplier
 	

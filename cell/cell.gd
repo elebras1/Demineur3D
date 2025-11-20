@@ -55,19 +55,19 @@ func update_color():
 	match state:
 		0:  # CACHÉE (Case NON cliquée) → couleur sombre
 			if is_dark:
-				mat.albedo_color = Color(0.55, 0.50, 0.40) # Cachée sombre
+				mat.albedo_color = Color(0.45, 0.38, 0.28) # Sable brun foncé
 			else:
-				mat.albedo_color = Color(0.65, 0.60, 0.50) # Cachée claire
+				mat.albedo_color = Color(0.68, 0.58, 0.42) # Sable doré
 
 			if label: label.text = ""
 			_remove_flag()
 
 
-		1:  # RÉVÉLÉE → couleur claire (par défaut maintenant)
+		1:  # RÉVÉLÉE → couleur claire
 			if is_dark:
-				mat.albedo_color = Color(0.70, 0.65, 0.55) # Cachée sombre
+				mat.albedo_color = Color(0.62, 0.56, 0.46) # Beige moyen
 			else:
-				mat.albedo_color = Color(0.75, 0.70, 0.60) # Cachée claire
+				mat.albedo_color = Color(0.70, 0.63, 0.52) # Sable clair
 
 			_remove_flag()
 
@@ -85,9 +85,9 @@ func update_color():
 
 		2:  # FLAG
 			if is_dark:
-				mat.albedo_color = Color(0.78, 0.70, 0.65)
+				mat.albedo_color = Color(0.72, 0.58, 0.42) # Terre cuite foncée
 			else:
-				mat.albedo_color = Color(0.83, 0.75, 0.70)
+				mat.albedo_color = Color(0.80, 0.64, 0.46) # Terre cuite claire
 
 			if label: label.text = ""
 
